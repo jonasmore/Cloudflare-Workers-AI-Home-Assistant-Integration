@@ -1,0 +1,49 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Cloudflare Workers AI Setup",
+        "description": "Enter your Cloudflare account credentials to connect to Workers AI.",
+        "data": {
+          "account_id": "Account ID",
+          "api_token": "API Token"
+        }
+      },
+      "reconfigure": {
+        "title": "Update Cloudflare Credentials",
+        "description": "Update your Cloudflare account credentials. The integration will be reloaded with the new credentials.",
+        "data": {
+          "account_id": "Account ID",
+          "api_token": "API Token"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to Cloudflare API. Please check your credentials and ensure Workers AI is enabled.",
+      "unknown": "Unexpected error occurred. Please try again."
+    },
+    "abort": {
+      "already_configured": "This Cloudflare account is already configured.",
+      "reconfigure_successful": "Credentials updated successfully. The integration has been reloaded."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Model Selection",
+        "description": "Choose which models to use for each service. Changes take effect immediately.",
+        "data": {
+          "tts_model": "Text-to-Speech Model",
+          "stt_model": "Speech-to-Text Model",
+          "llm_model": "Conversation Model (LLM)",
+          "llm_hass_api": "LLM Home Assistant API (for device control)",
+          "prompt": "System Prompt (optional)"
+        },
+        "data_description": {
+          "llm_hass_api": "Enable device control by selecting an LLM API. Requires a function-calling model like Hermes 2 Pro.",
+          "prompt": "Customize the system prompt for the conversation agent."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Cloudflare Workers AI (TTS/STT/LLM)",
+  "render_readme": true,
+  "domains": ["tts", "stt", "conversation"]
+}
