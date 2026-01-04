@@ -1,10 +1,10 @@
 {
   "domain": "cloudflare_workers_ai",
   "name": "Cloudflare Workers AI",
+  "after_dependencies": ["assist_pipeline", "intent"],
   "codeowners": ["@jonasmore"],
   "config_flow": true,
   "dependencies": ["conversation"],
-  "after_dependencies": ["assist_pipeline", "intent"],
   "documentation": "https://github.com/jonasmore/cloudflare-workers-ai-HA",
   "integration_type": "service",
   "iot_class": "cloud_polling",
