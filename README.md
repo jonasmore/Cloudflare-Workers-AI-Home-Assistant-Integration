@@ -5,8 +5,6 @@
 [![hacs][hacsbadge]][hacs]
 [![hassfest][hassfest-shield]][hassfest]
 [![validate][validate-shield]][validate]
-
-[![downloads][downloads-shield]][downloads]
 [![stars][stars-shield]][stars]
 [![issues][issues-shield]][issues]
 
@@ -315,18 +313,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Star ⭐ this repository if you find it useful!**
 
-[releases-shield]: https://img.shields.io/github/release/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=social
 [releases]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/releases
-[license-shield]: https://img.shields.io/github/license/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=social
 [hacs]: https://github.com/hacs/integration
-[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-[hassfest-shield]: https://img.shields.io/github/actions/workflow/status/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/hassfest.yaml?style=for-the-badge&label=Hassfest
+[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=social
+[hassfest-shield]: https://img.shields.io/github/actions/workflow/status/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/hassfest.yaml?style=social&label=Hassfest
 [hassfest]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/actions/workflows/hassfest.yaml
-[validate-shield]: https://img.shields.io/github/actions/workflow/status/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/validate.yaml?style=for-the-badge&label=HACS
+[validate-shield]: https://img.shields.io/github/actions/workflow/status/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/validate.yaml?style=social&label=HACS
 [validate]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/actions/workflows/validate.yaml
-[downloads-shield]: https://img.shields.io/github/downloads/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/total.svg?style=for-the-badge
-[downloads]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/releases
-[stars-shield]: https://img.shields.io/github/stars/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=social
 [stars]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/stargazers
-[issues-shield]: https://img.shields.io/github/issues/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=social
 [issues]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/issues
