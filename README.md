@@ -3,13 +3,21 @@
 [![GitHub Release][releases-shield]][releases]
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
+[![hassfest][hassfest-shield]][hassfest]
+[![validate][validate-shield]][validate]
+
+[![downloads][downloads-shield]][downloads]
+[![stars][stars-shield]][stars]
+[![issues][issues-shield]][issues]
 
 A comprehensive Home Assistant integration that brings Cloudflare Workers AI capabilities to your smart home, including Text-to-Speech, Speech-to-Text, and Conversation (LLM) with **full device control** for the Assist pipeline.
 
-> **⚠️ Early Development Notice**  
-> This integration is in early development. While core features are functional, you may encounter bugs or unexpected behavior. Please report any issues on [GitHub](https://github.com/jonasmore/cloudflare-workers-ai-HA/issues). Feedback and contributions are welcome!
+> **⚠️ Early Development Notice** 
+> This integration is in early development. While core features are functional, you may encounter bugs or unexpected behavior. Please report any issues on [GitHub](https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/issues). Feedback and contributions are welcome!
 
-![Cloudflare Workers AI](https://raw.githubusercontent.com/jonasmore/cloudflare-workers-ai-HA/main/images/workers-x-ha.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/main/images/workers-x-ha.png" alt="Cloudflare Workers AI" width="50%">
+</p>
 
 ## ✨ Features
 
@@ -67,11 +75,15 @@ Before installing this integration, you need:
 
 ### HACS (Recommended)
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jonasmore&repository=Cloudflare-Workers-AI-Home-Assistant-Integration&category=integration)
+
+**Or manually:**
+
 1. Open HACS in Home Assistant
 2. Click on "Integrations"
 3. Click the three dots in the top right corner
 4. Select "Custom repositories"
-5. Add this repository URL: `https://github.com/jonasmore/cloudflare-workers-ai-HA`
+5. Add this repository URL: `https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration`
 6. Select category: "Integration"
 7. Click "Add"
 8. Find "Cloudflare Workers AI" in HACS
@@ -80,7 +92,7 @@ Before installing this integration, you need:
 
 ### Manual Installation
 
-1. Download the latest release from [GitHub Releases](https://github.com/jonasmore/cloudflare-workers-ai-HA/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/releases)
 2. Extract the `custom_components/cloudflare_workers_ai` folder
 3. Copy it to your Home Assistant `config/custom_components` directory
 4. Restart Home Assistant
@@ -97,7 +109,9 @@ Before installing this integration, you need:
    - **API Token**: Your Cloudflare API token
 5. Click **Submit**
 
-![Setup Screenshot](https://raw.githubusercontent.com/jonasmore/cloudflare-workers-ai-HA/main/images/setup.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/main/images/setup.png" alt="Setup Screenshot" width="60%">
+</p>
 
 ### Model Selection
 
@@ -110,10 +124,11 @@ After initial setup, configure which models to use:
    - **TTS Model**: Choose from 4 text-to-speech models
    - **STT Model**: Choose from 4 speech-to-text models
    - **LLM Model**: Choose from 4 conversation models (all with device control)
-   - **LLM Home Assistant API**: Select "Assist" for device control
 5. Click **Submit**
 
-![Configuration Screenshot](https://raw.githubusercontent.com/jonasmore/cloudflare-workers-ai-HA/main/images/config.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/main/images/config.png" alt="Configuration Screenshot" width="60%">
+</p>
 
 ### Create an Assist Pipeline
 
@@ -128,7 +143,9 @@ After initial setup, configure which models to use:
    - **Wake word**: Choose a wake word engine (optional)
 4. Click **Create** to save your assistant
 
-![Assist Pipeline](https://raw.githubusercontent.com/jonasmore/cloudflare-workers-ai-HA/main/images/assist-pipeline.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/main/images/assist-pipeline.png" alt="Assist Pipeline" width="60%">
+</p>
 
 ### Expose Entities for Voice Control
 
@@ -282,7 +299,7 @@ Contributions are welcome! Please:
 
 ## 💬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/jonasmore/cloudflare-workers-ai-HA/issues)
+- **Issues**: [GitHub Issues](https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/issues)
 - **Home Assistant Community**: [Community Forum](https://community.home-assistant.io/)
 
 ## 📄 License
@@ -298,8 +315,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Star ⭐ this repository if you find it useful!**
 
-[releases-shield]: https://img.shields.io/github/release/jonasmore/cloudflare-workers-ai-HA.svg?style=for-the-badge
-[releases]: https://github.com/jonasmore/cloudflare-workers-ai-HA/releases
-[license-shield]: https://img.shields.io/github/license/jonasmore/cloudflare-workers-ai-HA.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[releases]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/releases
+[license-shield]: https://img.shields.io/github/license/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
 [hacs]: https://github.com/hacs/integration
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[hassfest-shield]: https://img.shields.io/github/actions/workflow/status/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/hassfest.yaml?style=for-the-badge&label=Hassfest
+[hassfest]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/actions/workflows/hassfest.yaml
+[validate-shield]: https://img.shields.io/github/actions/workflow/status/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/validate.yaml?style=for-the-badge&label=HACS
+[validate]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/actions/workflows/validate.yaml
+[downloads-shield]: https://img.shields.io/github/downloads/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/total.svg?style=for-the-badge
+[downloads]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/releases
+[stars-shield]: https://img.shields.io/github/stars/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[stars]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/stargazers
+[issues-shield]: https://img.shields.io/github/issues/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration.svg?style=for-the-badge
+[issues]: https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/issues

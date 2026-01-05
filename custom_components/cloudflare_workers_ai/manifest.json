@@ -5,10 +5,10 @@
   "codeowners": ["@jonasmore"],
   "config_flow": true,
   "dependencies": ["conversation"],
-  "documentation": "https://github.com/jonasmore/cloudflare-workers-ai-HA",
+  "documentation": "https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/jonasmore/cloudflare-workers-ai-HA/issues",
+  "issue_tracker": "https://github.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/issues",
   "requirements": ["aiohttp>=3.8.0"],
   "version": "0.1.0"
 }

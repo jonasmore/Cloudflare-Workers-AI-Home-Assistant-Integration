@@ -4,31 +4,41 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    name: Create release asset
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Get version from tag
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
       
+      - name: Validate version format
+        run: |
+          if [[ ! "${{ steps.version.outputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Invalid version format. Expected semver (e.g., 1.0.0)"
+            exit 1
+          fi
+      
       - name: Update manifest version
         run: |
           sed -i 's/"version": ".*"/"version": "${{ steps.version.outputs.version }}"/' custom_components/cloudflare_workers_ai/manifest.json
+          cat custom_components/cloudflare_workers_ai/manifest.json
       
       - name: Create release archive
         run: |
           cd custom_components
-          zip -r ../cloudflare-workers-ai-${{ steps.version.outputs.version }}.zip cloudflare_workers_ai
+          zip -r ../cloudflare-workers-ai-${{ steps.version.outputs.version }}.zip cloudflare_workers_ai -x "*.pyc" -x "*__pycache__*"
       
       - name: Upload release asset
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
+        with:
+          files: cloudflare-workers-ai-${{ steps.version.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./cloudflare-workers-ai-${{ steps.version.outputs.version }}.zip
-          asset_name: cloudflare-workers-ai-${{ steps.version.outputs.version }}.zip
-          asset_content_type: application/zip
