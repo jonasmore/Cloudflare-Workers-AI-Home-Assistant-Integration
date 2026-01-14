@@ -126,6 +126,7 @@ class CloudflareWorkersConversation(ConversationEntity):
     _attr_has_entity_name = True
     _attr_should_poll = False
     _attr_name = "Cloudflare Workers AI"
+    _attr_available = True
 
     def __init__(self, hass: HomeAssistant, api: CloudflareAPI, config_entry: ConfigEntry) -> None:
         """Initialize conversation entity."""
@@ -134,6 +135,7 @@ class CloudflareWorkersConversation(ConversationEntity):
         self._config_entry = config_entry
         self._attr_unique_id = f"{config_entry.entry_id}_conversation"
         self._attr_supported_features = conversation.ConversationEntityFeature(0)
+        self._attr_state = "idle"
         self._attr_device_info = dr.DeviceInfo(
             identifiers={(DOMAIN, config_entry.entry_id)},
             name=config_entry.title,
@@ -141,6 +143,11 @@ class CloudflareWorkersConversation(ConversationEntity):
             model="Workers AI",
             entry_type=dr.DeviceEntryType.SERVICE,
         )
+
+    @property
+    def state(self) -> str:
+        """Return the current state of the conversation entity."""
+        return self._attr_state
 
     @property
     def supported_languages(self) -> list[str] | Literal["*"]:
@@ -175,9 +182,6 @@ class CloudflareWorkersConversation(ConversationEntity):
                     model
                 )
 
-        assist_pipeline.async_migrate_engine(
-            self._hass, "conversation", self._config_entry.entry_id, self.entity_id
-        )
         conversation.async_set_agent(self._hass, self._config_entry, self)
         self._config_entry.async_on_unload(
             self._config_entry.add_update_listener(self._async_entry_update_listener)
@@ -198,6 +202,10 @@ class CloudflareWorkersConversation(ConversationEntity):
         self, user_input: ConversationInput
     ) -> ConversationResult:
         """Process a user input with device control support."""
+        # Update state to show processing
+        self._attr_state = "processing"
+        self.async_write_ha_state()
+        
         options = self._config_entry.options
         model = options.get(CONF_LLM_MODEL, DEFAULT_LLM_MODEL)
         llm_hass_api = options.get(CONF_LLM_HASS_API)
@@ -273,6 +281,10 @@ class CloudflareWorkersConversation(ConversationEntity):
                              model, len(messages), len(tools) if tools else 0)
                 _LOGGER.debug("LLM Request - Full messages: %s", messages)
                 
+                # Update state to show waiting for LLM response
+                self._attr_state = "waiting for LLM"
+                self.async_write_ha_state()
+                
                 # Call Cloudflare API
                 response = await self._api.conversation(
                     model=model,
@@ -294,10 +306,17 @@ class CloudflareWorkersConversation(ConversationEntity):
                 
                 if not tool_calls:
                     # No tool calls, extract final response
+                    self._attr_state = "generating response"
+                    self.async_write_ha_state()
+                    
                     response_text = self._extract_response_text(response)
                     
                     intent_response = intent.IntentResponse(language=user_input.language)
                     intent_response.async_set_speech(response_text)
+
+                    # Set state back to idle
+                    self._attr_state = "idle"
+                    self.async_write_ha_state()
 
                     return ConversationResult(
                         response=intent_response,
@@ -320,6 +339,10 @@ class CloudflareWorkersConversation(ConversationEntity):
 
                 _LOGGER.info("Starting tool execution for %d tool calls", len(tool_calls))
 
+                # Update state to show executing device control
+                self._attr_state = f"executing {len(tool_calls)} action(s)"
+                self.async_write_ha_state()
+
                 # Add assistant message with tool calls
                 # Cloudflare API requires content to be a string, not null/None
                 assistant_content = response.get("response") or ""
@@ -330,10 +353,19 @@ class CloudflareWorkersConversation(ConversationEntity):
 
                 _LOGGER.info("About to execute tool calls loop")
                 # Execute each tool call
-                for tool_call in tool_calls:
+                for idx, tool_call in enumerate(tool_calls, 1):
                     _LOGGER.info("In tool call loop, processing tool call")
                     tool_name = tool_call.get("name")
                     tool_args = tool_call.get("arguments", {})
+                    
+                    # Update state to show which specific tool is being executed
+                    # Try to extract device/entity name from arguments for more context
+                    target = tool_args.get("name") or tool_args.get("area") or tool_args.get("floor") or ""
+                    if target:
+                        self._attr_state = f"executing: {tool_name} on '{target}' ({idx}/{len(tool_calls)})"
+                    else:
+                        self._attr_state = f"executing: {tool_name} ({idx}/{len(tool_calls)})"
+                    self.async_write_ha_state()
                     
                     _LOGGER.info("Executing tool: %s with args: %s", tool_name, tool_args)
                     
@@ -362,6 +394,8 @@ class CloudflareWorkersConversation(ConversationEntity):
 
             # Max iterations reached
             _LOGGER.warning("Max tool iterations reached")
+            self._attr_state = "idle"
+            self.async_write_ha_state()
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_speech(
                 "I tried to help but encountered too many steps. Please try again."
@@ -373,6 +407,8 @@ class CloudflareWorkersConversation(ConversationEntity):
 
         except CloudflareAPIError as err:
             _LOGGER.error("Error processing conversation: %s", err)
+            self._attr_state = "error"
+            self.async_write_ha_state()
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_speech(
                 "Sorry, I encountered an error processing your request."
@@ -383,6 +419,8 @@ class CloudflareWorkersConversation(ConversationEntity):
             )
         except Exception as err:
             _LOGGER.exception("Unexpected error in conversation: %s", err)
+            self._attr_state = "error"
+            self.async_write_ha_state()
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_speech(
                 "Sorry, an unexpected error occurred."
