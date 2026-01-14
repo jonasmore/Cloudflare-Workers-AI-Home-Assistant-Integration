@@ -10,7 +10,18 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .cloudflare_api import CloudflareAPI, CloudflareAPIError
-from .const import CONF_TTS_MODEL, DEFAULT_TTS_MODEL, DOMAIN, TTS_MODELS
+from .const import (
+    CONF_TTS_LANGUAGE,
+    CONF_TTS_MODEL,
+    CONF_TTS_VOICE,
+    DEFAULT_TTS_LANGUAGE,
+    DEFAULT_TTS_MODEL,
+    DEFAULT_TTS_VOICES,
+    DOMAIN,
+    TTS_LANGUAGES,
+    TTS_MODELS,
+    TTS_VOICES,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,19 +63,35 @@ class CloudflareWorkersTTS(TextToSpeechEntity):
     @property
     def supported_options(self) -> list[str]:
         """Return list of supported options."""
-        return [CONF_TTS_MODEL]
+        return [CONF_TTS_MODEL, CONF_TTS_VOICE, CONF_TTS_LANGUAGE]
 
     @property
     def default_options(self) -> dict[str, Any]:
         """Return default options."""
         model = self._config_entry.options.get(CONF_TTS_MODEL, DEFAULT_TTS_MODEL)
-        return {CONF_TTS_MODEL: model}
+        options = {CONF_TTS_MODEL: model}
+        
+        # Add voice if model supports it
+        if model in TTS_VOICES:
+            default_voice = DEFAULT_TTS_VOICES.get(model)
+            voice = self._config_entry.options.get(CONF_TTS_VOICE, default_voice)
+            if voice:
+                options[CONF_TTS_VOICE] = voice
+        
+        # Add language if model supports it
+        if model in TTS_LANGUAGES:
+            language = self._config_entry.options.get(CONF_TTS_LANGUAGE, DEFAULT_TTS_LANGUAGE)
+            options[CONF_TTS_LANGUAGE] = language
+        
+        return options
 
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict[str, Any] | None = None
     ) -> TtsAudioType:
         """Load TTS audio."""
         model = DEFAULT_TTS_MODEL
+        voice = None
+        tts_language = None
         
         if options and CONF_TTS_MODEL in options:
             model = options[CONF_TTS_MODEL]
@@ -75,9 +102,34 @@ class CloudflareWorkersTTS(TextToSpeechEntity):
             _LOGGER.error("Invalid TTS model: %s", model)
             return None, None
 
+        # Get voice parameter if model supports it
+        if model in TTS_VOICES:
+            if options and CONF_TTS_VOICE in options:
+                voice = options[CONF_TTS_VOICE]
+            elif self._config_entry.options:
+                voice = self._config_entry.options.get(
+                    CONF_TTS_VOICE, 
+                    DEFAULT_TTS_VOICES.get(model)
+                )
+        
+        # Get language parameter if model supports it
+        if model in TTS_LANGUAGES:
+            if options and CONF_TTS_LANGUAGE in options:
+                tts_language = options[CONF_TTS_LANGUAGE]
+            elif self._config_entry.options:
+                tts_language = self._config_entry.options.get(
+                    CONF_TTS_LANGUAGE, 
+                    DEFAULT_TTS_LANGUAGE
+                )
+
         try:
-            _LOGGER.info("Generating TTS with model %s for text: %s", model, message[:50])
-            audio_data = await self._api.text_to_speech(model, message)
+            _LOGGER.info(
+                "Generating TTS with model %s, voice %s, language %s for text: %s", 
+                model, voice, tts_language, message[:50]
+            )
+            audio_data = await self._api.text_to_speech(
+                model, message, voice=voice, language=tts_language
+            )
             
             if audio_data and len(audio_data) > 0:
                 _LOGGER.info("TTS generated %d bytes of audio", len(audio_data))

@@ -77,15 +77,25 @@ class CloudflareAPI:
             _LOGGER.error("Error testing Cloudflare API connection: %s", err)
             raise CloudflareAPIError(f"Connection test failed: {err}") from err
 
-    async def text_to_speech(self, model: str, text: str) -> bytes:
+    async def text_to_speech(
+        self, 
+        model: str, 
+        text: str, 
+        voice: str | None = None, 
+        language: str | None = None
+    ) -> bytes:
         """Convert text to speech using specified model."""
         url = f"{self.base_url}/{model}"
         
         # Different models use different parameter names
         if "melotts" in model.lower():
             payload = {"prompt": text}
+            if language:
+                payload["lang"] = language
         else:
             payload = {"text": text}
+            if voice:
+                payload["speaker"] = voice
 
         try:
             async with aiohttp.ClientSession() as session:
