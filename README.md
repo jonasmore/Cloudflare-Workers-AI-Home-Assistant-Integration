@@ -19,7 +19,10 @@ A comprehensive Home Assistant integration that brings Cloudflare Workers AI cap
 
 ## ✨ Features
 
-- 🗣️ **Text-to-Speech (TTS)** - 4 high-quality voice models
+- 🗣️ **Text-to-Speech (TTS)** - 4 high-quality voice models with **40+ voice options**
+- 🎙️ **Voice Selection** - Choose from dozens of voices for Aura models (NEW in v0.2.0)
+- 🌍 **Language Selection** - Select language for MeloTTS (6 languages) (NEW in v0.2.0)
+- 📊 **Real-time State Tracking** - Monitor conversation processing stages and device actions (NEW in v0.2.0)
 - 🎤 **Speech-to-Text (STT)** - 4 advanced STT models
 - 💬 **Conversation (LLM)** - 4 powerful language models with full device control
 - 🎮 **Device Control** - Full Home Assistant device control via voice with 22 built-in tools
@@ -128,6 +131,26 @@ After initial setup, configure which models to use:
   <img src="https://raw.githubusercontent.com/jonasmore/Cloudflare-Workers-AI-Home-Assistant-Integration/main/images/config.png" alt="Configuration Screenshot" width="60%">
 </p>
 
+### Voice & Language Configuration (v0.2.0+)
+
+Customize your TTS experience with voice and language options:
+
+**Voice Selection (Aura Models)**:
+- **Aura 2 EN**: 40 English voices including luna, mars, zeus, athena, apollo, and more
+- **Aura 2 ES**: 10 Spanish voices including aquila, sirio, diana, celeste, and more
+- **Aura 1**: 12 voices including angus, asteria, orion, perseus, and more
+
+**Language Selection (MeloTTS)**:
+- English, Spanish, French, Chinese, Japanese, Korean
+
+**How to Configure**:
+1. Select your TTS model and click **Submit**
+2. Reopen **Configure** to see voice/language options for your selected model
+3. Choose your preferred voice or language
+4. Click **Submit** to save
+
+**Note**: Voice/language options appear dynamically based on your selected TTS model. If you change the TTS model, submit and reopen the configuration to see the appropriate options.
+
 ### Create an Assist Pipeline
 
 1. Go to **Settings** → **Voice Assistants** → **Assistants**
@@ -190,6 +213,22 @@ Configure in the Assist pipeline:
 1. Go to **Settings** → **Voice Assistants**
 2. Click on your assistant or create a new one
 3. Under **Conversation Agent**, select "Cloudflare Workers AI"
+
+### Real-time State Tracking (v0.2.0+)
+
+Monitor what your voice assistant is doing in real-time! The conversation entity now shows its current state:
+
+**States you'll see**:
+- `idle` - Ready and waiting for input
+- `processing` - Started processing your request
+- `waiting for LLM` - Waiting for AI response from Cloudflare
+- `generating response` - Creating the final response
+- `executing: HassTurnOn on 'kitchen light' (1/2)` - Performing device control actions
+- `error` - Something went wrong
+
+This provides excellent visibility for debugging and understanding your voice assistant's behavior. You can view the state in:
+- Developer Tools → States → `conversation.cloudflare_workers_ai`
+- The conversation entity card in your dashboard
 
 
 ## 🎮 Device Control Examples

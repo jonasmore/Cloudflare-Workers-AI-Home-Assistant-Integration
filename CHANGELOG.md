@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-01-14
+
+### Added
+- **Dynamic TTS Voice Selection**: Choose from 40+ voices for Aura models
+  - Aura 2 EN: 40 English voices (luna, mars, zeus, athena, and more)
+  - Aura 2 ES: 10 Spanish voices (aquila, sirio, diana, and more)
+  - Aura 1: 12 voices (angus, asteria, orion, and more)
+- **TTS Language Selection**: Select language for MeloTTS (English, Spanish, French, Chinese, Japanese, Korean)
+- **Real-time Conversation State Tracking**: Monitor exactly what your voice assistant is doing
+  - Shows current processing stage (idle, processing, waiting for LLM, generating response)
+  - Displays specific tool execution details (e.g., "executing: HassTurnOn on 'kitchen light' (1/2)")
+  - Shows device/area/floor being controlled
+  - Error state indication
+- Configuration UI improvements with helpful descriptions and disclaimers
+- Validation to prevent incompatible voice/language combinations
+- Improved UI labels and descriptions for better user experience
+
+### Fixed
+- Conversation entity availability issue (removed incompatible `async_migrate_engine` call)
+- Invalid voice/language selections are automatically reset to defaults
+- Incompatible voice/language settings are cleaned up when switching models
+
+### Technical Details
+- Added `CONF_TTS_VOICE` and `CONF_TTS_LANGUAGE` configuration constants
+- Implemented comprehensive voice and language mappings for all TTS models
+- Enhanced conversation entity with state property and real-time updates
+- Added validation logic in config flow to ensure data consistency
+- Updated translation files with proper labels for all new options
+
 ## [0.1.0] - 2026-01-04
 
 ### Added
@@ -48,4 +77,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive HTTP/LLM request/response logging
 - Support for Cloudflare Workers AI function calling format
 
+[0.2.0]: https://github.com/jonasmore/cloudflare-workers-ai-HA/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jonasmore/cloudflare-workers-ai-HA/releases/tag/v0.1.0
