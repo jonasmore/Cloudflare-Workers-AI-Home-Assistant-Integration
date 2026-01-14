@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev
   schedule:
     - cron: '0 0 1,15 * *'  # Run bi-weekly on the 1st and 15th
   workflow_dispatch:
