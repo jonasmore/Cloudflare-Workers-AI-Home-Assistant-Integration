@@ -30,18 +30,37 @@
   "options": {
     "step": {
       "init": {
-        "title": "Model Selection",
-        "description": "Choose which models to use for each service. Changes take effect immediately.",
+        "title": "Model Configuration",
+        "description": "Configure models and their options. Note: Voice/Language options appear based on the currently saved TTS model. If you change the TTS model, click Submit first, then reopen Configure to see the appropriate voice or language options.",
         "data": {
           "tts_model": "Text-to-Speech Model",
+          "tts_voice": "TTS Voice",
+          "tts_language": "TTS Language",
           "stt_model": "Speech-to-Text Model",
           "llm_model": "Conversation Model (LLM)",
           "llm_hass_api": "LLM Home Assistant API (for device control)",
           "prompt": "System Prompt (optional)"
         },
         "data_description": {
+          "tts_model": "Select the TTS model. After changing, submit and reopen to configure voice/language options.",
+          "tts_voice": "Voice for Aura models (Aura 2 EN, Aura 2 ES, Aura 1). Only shown when an Aura model is selected.",
+          "tts_language": "Language for MeloTTS. Only shown when MeloTTS is selected.",
           "llm_hass_api": "Enable device control by selecting an LLM API. Requires a function-calling model like Hermes 2 Pro.",
           "prompt": "Customize the system prompt for the conversation agent."
+        }
+      },
+      "tts_voice": {
+        "title": "TTS Voice Selection",
+        "description": "Select the voice for your Text-to-Speech model.",
+        "data": {
+          "tts_voice": "Voice"
+        }
+      },
+      "tts_language": {
+        "title": "TTS Language Selection",
+        "description": "Select the language for your Text-to-Speech model.",
+        "data": {
+          "tts_language": "Language"
         }
       }
     }

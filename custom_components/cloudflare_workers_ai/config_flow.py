@@ -20,15 +20,21 @@ from .const import (
     CONF_LLM_MODEL,
     CONF_PROMPT,
     CONF_STT_MODEL,
+    CONF_TTS_LANGUAGE,
     CONF_TTS_MODEL,
+    CONF_TTS_VOICE,
     DEFAULT_LLM_MODEL,
     DEFAULT_PROMPT,
     DEFAULT_STT_MODEL,
+    DEFAULT_TTS_LANGUAGE,
     DEFAULT_TTS_MODEL,
+    DEFAULT_TTS_VOICES,
     DOMAIN,
     LLM_MODELS,
     STT_MODELS,
+    TTS_LANGUAGES,
     TTS_MODELS,
+    TTS_VOICES,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -159,73 +165,136 @@ class CloudflareWorkersAIOptionsFlow(config_entries.OptionsFlow):
     ) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
+            # Clean up incompatible voice/language settings
+            tts_model = user_input.get(CONF_TTS_MODEL)
+            
+            # Remove voice if model doesn't support it
+            if tts_model not in TTS_VOICES and CONF_TTS_VOICE in user_input:
+                user_input.pop(CONF_TTS_VOICE)
+            
+            # Remove language if model doesn't support it
+            if tts_model not in TTS_LANGUAGES and CONF_TTS_LANGUAGE in user_input:
+                user_input.pop(CONF_TTS_LANGUAGE)
+            
+            # Validate voice exists for the model
+            if CONF_TTS_VOICE in user_input and tts_model in TTS_VOICES:
+                if user_input[CONF_TTS_VOICE] not in TTS_VOICES[tts_model]:
+                    # Reset to default voice if invalid
+                    user_input[CONF_TTS_VOICE] = DEFAULT_TTS_VOICES.get(tts_model)
+            
             return self.async_create_entry(title="", data=user_input)
 
         options = self._config_entry.options
+        tts_model = options.get(CONF_TTS_MODEL, DEFAULT_TTS_MODEL)
 
-        # Get available LLM APIs from Home Assistant
         llm_apis = ["none", "assist", "conversation"]
         
-        data_schema = vol.Schema(
-            {
-                vol.Required(
-                    CONF_TTS_MODEL,
-                    default=options.get(CONF_TTS_MODEL, DEFAULT_TTS_MODEL),
-                ): selector.SelectSelector(
-                    selector.SelectSelectorConfig(
-                        options=[
-                            selector.SelectOptionDict(value=key, label=value)
-                            for key, value in TTS_MODELS.items()
-                        ],
-                        mode=selector.SelectSelectorMode.DROPDOWN,
-                    )
-                ),
-                vol.Required(
-                    CONF_STT_MODEL,
-                    default=options.get(CONF_STT_MODEL, DEFAULT_STT_MODEL),
-                ): selector.SelectSelector(
-                    selector.SelectSelectorConfig(
-                        options=[
-                            selector.SelectOptionDict(value=key, label=value)
-                            for key, value in STT_MODELS.items()
-                        ],
-                        mode=selector.SelectSelectorMode.DROPDOWN,
-                    )
-                ),
-                vol.Required(
-                    CONF_LLM_MODEL,
-                    default=options.get(CONF_LLM_MODEL, DEFAULT_LLM_MODEL),
-                ): selector.SelectSelector(
-                    selector.SelectSelectorConfig(
-                        options=[
-                            selector.SelectOptionDict(value=key, label=value)
-                            for key, value in LLM_MODELS.items()
-                        ],
-                        mode=selector.SelectSelectorMode.DROPDOWN,
-                    )
-                ),
-                vol.Optional(
-                    CONF_LLM_HASS_API,
-                    default=options.get(CONF_LLM_HASS_API, "none"),
-                ): selector.SelectSelector(
-                    selector.SelectSelectorConfig(
-                        options=[
-                            selector.SelectOptionDict(value=api, label=api.title() if api != "none" else "None (No device control)")
-                            for api in llm_apis
-                        ],
-                        mode=selector.SelectSelectorMode.DROPDOWN,
-                    )
-                ),
-                vol.Optional(
-                    CONF_PROMPT,
-                    default=options.get(CONF_PROMPT, DEFAULT_PROMPT),
-                ): selector.TextSelector(
-                    selector.TextSelectorConfig(
-                        multiline=True,
-                        type=selector.TextSelectorType.TEXT,
-                    )
-                ),
-            }
-        )
+        schema_dict = {
+            vol.Required(
+                CONF_TTS_MODEL,
+                default=tts_model,
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        selector.SelectOptionDict(value=key, label=value)
+                        for key, value in TTS_MODELS.items()
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+        }
+        
+        if tts_model in TTS_VOICES:
+            voices = TTS_VOICES[tts_model]
+            default_voice = DEFAULT_TTS_VOICES.get(tts_model, list(voices.keys())[0])
+            
+            # Get saved voice, validate it exists for this model
+            saved_voice = options.get(CONF_TTS_VOICE, default_voice)
+            if saved_voice not in voices:
+                saved_voice = default_voice
+            
+            schema_dict[vol.Required(
+                CONF_TTS_VOICE,
+                default=saved_voice,
+            )] = selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        selector.SelectOptionDict(value=key, label=value)
+                        for key, value in voices.items()
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            )
+        
+        if tts_model in TTS_LANGUAGES:
+            languages = TTS_LANGUAGES[tts_model]
+            
+            # Get saved language, validate it exists
+            saved_language = options.get(CONF_TTS_LANGUAGE, DEFAULT_TTS_LANGUAGE)
+            if saved_language not in languages:
+                saved_language = DEFAULT_TTS_LANGUAGE
+            
+            schema_dict[vol.Required(
+                CONF_TTS_LANGUAGE,
+                default=saved_language,
+            )] = selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        selector.SelectOptionDict(value=key, label=value)
+                        for key, value in languages.items()
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            )
+        
+        schema_dict.update({
+            vol.Required(
+                CONF_STT_MODEL,
+                default=options.get(CONF_STT_MODEL, DEFAULT_STT_MODEL),
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        selector.SelectOptionDict(value=key, label=value)
+                        for key, value in STT_MODELS.items()
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+            vol.Required(
+                CONF_LLM_MODEL,
+                default=options.get(CONF_LLM_MODEL, DEFAULT_LLM_MODEL),
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        selector.SelectOptionDict(value=key, label=value)
+                        for key, value in LLM_MODELS.items()
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+            vol.Optional(
+                CONF_LLM_HASS_API,
+                default=options.get(CONF_LLM_HASS_API, "none"),
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        selector.SelectOptionDict(value=api, label=api.title() if api != "none" else "None (No device control)")
+                        for api in llm_apis
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+            vol.Optional(
+                CONF_PROMPT,
+                default=options.get(CONF_PROMPT, DEFAULT_PROMPT),
+            ): selector.TextSelector(
+                selector.TextSelectorConfig(
+                    multiline=True,
+                    type=selector.TextSelectorType.TEXT,
+                )
+            ),
+        })
+        
+        data_schema = vol.Schema(schema_dict)
 
         return self.async_show_form(step_id="init", data_schema=data_schema)
